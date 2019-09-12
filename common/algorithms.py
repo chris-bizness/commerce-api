@@ -1,9 +1,5 @@
 import re
-
-
-# Users tend to input their card numbers with spacers where the card shows them
-# These tend to be the most common spacer characters
-COMMON_SEPARATORS = [' ', '.', ',', '|', ':', ';', '-', '\t']
+from common.constants import COMMON_SEPARATORS
 
 
 def is_all_digits(maybe_all_digits: str) -> bool:

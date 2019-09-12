@@ -10,3 +10,8 @@ IIN_LENGTH = 6  # TODO: Update this value (most likely in 2022)
 # number. The PAN can have up to 12 digits (12 + 6 + 1 = 19)
 MIN_PAYMENT_CARD_NUMBER_LENGTH = 8
 MAX_PAYMENT_CARD_NUMBER_LENGTH = 19
+
+
+# Users tend to input their card numbers with spacers where the card shows them
+# These tend to be the most common spacer characters
+COMMON_SEPARATORS = [' ', '.', ',', '|', ':', ';', '-', '\t']
