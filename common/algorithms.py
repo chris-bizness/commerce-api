@@ -112,3 +112,27 @@ def generate_card_number(prefix=None, *, num_digits=16):
 
     check = _get_luhn_check_digit(prefix, is_incomplete=True)
     return prefix + str(check)
+
+
+def generate_card_number_from_issuer(issuer):
+    create_from = CardIssuer.from_string(issuer)
+    if not create_from:
+        raise ValueError("Unable to find CardIssuer matching '{issuer}'.")
+
+    prefix_range = random.choice(create_from.bin_ranges)
+    if isinstance(prefix_range, str):
+        prefix = prefix_range
+    else:
+        start, end = prefix_range
+        if start.startswith('0') or end.startswith('0'):
+            # None of the BINs we care about right now begin with a 0,
+            # so let's worry about this later
+            raise NotImplementedError(
+                "Implement a method that does not cast the start/end "
+                "as integers because leading 0s will be lost."
+            )
+        prefix = str(random.randint(int(start), int(end)))
+    return generate_card_number(
+        prefix=prefix,
+        num_digits=create_from.num_digits
+    )
