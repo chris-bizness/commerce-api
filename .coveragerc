@@ -4,6 +4,7 @@ omit=
     .venv/*
     manage.py
     project/wsgi.py
+    project/settings/*
 
 [report]
 show_missing=true
