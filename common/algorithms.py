@@ -1,11 +1,11 @@
 import re
 
 
-def is_all_digits(maybe_all_digits):
+def is_all_digits(maybe_all_digits: str) -> bool:
     return bool(re.fullmatch(r'\d+', maybe_all_digits))
 
 
-def clean_card_number(card_number):
+def clean_card_number(card_number: str) -> str:
     '''
     Many users tend to add spaces, dashes, or periods in between chunks of
     numbers on their credit cards. Clean the number by removing all the "spacer"
