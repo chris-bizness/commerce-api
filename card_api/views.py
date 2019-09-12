@@ -8,8 +8,11 @@ from common.algorithms import (
 )
 from card_api.schemas import (
     ValidateCardSchema,
-    GenerateCardFromIssuerSchema,
-    GenerateCardFromPrefixSchema,
+    GenerateCardSchema,
+)
+from common.constants import (
+    MIN_PAYMENT_CARD_NUMBER_LENGTH as MIN_LENGTH,
+    MAX_PAYMENT_CARD_NUMBER_LENGTH as MAX_LENGTH,
 )
 
 
@@ -28,29 +31,42 @@ class ValidateCardView(APIView):
         return _get_payment_card_number_response(**request.data)
 
 
-class GenerateCardFromIssuerView(APIView):
-    schema = GenerateCardFromIssuerSchema()
+class GenerateCardView(APIView):
+    schema = GenerateCardSchema()
 
-    def get(self, request, issuer):
-        try:
-            number = generate_card_number_from_issuer(issuer)
-        except Exception as e:
-            return Response(
-                {'issuer': [str(e)]},
-                status=status.HTTP_400_BAD_REQUEST
+    def _bad(self, **kwargs):
+        for k, v in kwargs.items():
+            if not isinstance(v, list):
+                kwargs[k] = [v]
+        return Response(kwargs, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        num_digits = request.query_params.get('length')
+        issuer = request.query_params.get('issuer')
+        prefix = request.query_params.get('prefix')
+
+        if issuer and (prefix or num_digits is not None):
+            return self._bad(
+                issuer="cannot be specified with `prefix` or `length`"
             )
-        return _get_payment_card_number_response(number=number, private=False)
-
-
-class GenerateCardFromPrefixView(APIView):
-    schema = GenerateCardFromPrefixSchema()
-
-    def get(self, request, prefix):
-        try:
-            number = generate_card_number(prefix)
-        except Exception as e:
-            return Response(
-                {'issuer': [str(e)]},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        if issuer:
+            try:
+                number = generate_card_number_from_issuer(issuer)
+            except Exception as e:
+                return self._bad(issuer=str(e))
+        else:
+            inputs = {}
+            if num_digits is not None:
+                if num_digits < MIN_LENGTH or num_digits > MAX_LENGTH:
+                    return self._bad(
+                        length="Must be between [{MIN_LENGTH}, {MAX_LENGTH}],"
+                        " inclusive."
+                    )
+                inputs['num_digits'] = int(num_digits)
+            if prefix:
+                inputs['prefix'] = prefix
+            try:
+                number = generate_card_number(**inputs)
+            except Exception as e:
+                return self._bad(prefix=str(e))
         return _get_payment_card_number_response(number=number, private=False)

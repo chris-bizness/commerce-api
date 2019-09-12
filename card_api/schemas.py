@@ -35,22 +35,11 @@ NUMBER_DETAIL_RESPONSE_SCHEMA = {
     }
 }
 
-NUMBER_RESPONSE_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "number": {
-            "type": "string",
-            "pattern": r"\d{8,19}",
-            "example": "4024007168211802"
-        },
-        "details": NUMBER_DETAIL_RESPONSE_SCHEMA,
-    }
-}
-
 
 class _Schema(AutoSchema):
     request_body = None
     responses = None
+    parameters = None
 
     def get_operation(self, *args, **kwargs):
         retval = super().get_operation(*args, **kwargs)
@@ -58,6 +47,8 @@ class _Schema(AutoSchema):
             retval['requestBody'] = self.request_body
         if self.responses:
             retval['responses'] = self.responses
+        if self.parameters:
+            retval['parameters'] = self.parameters
         return retval
 
 
@@ -108,39 +99,55 @@ class ValidateCardSchema(_Schema):
     }
 
 
-class GenerateCardFromIssuerSchema(_Schema):
+class GenerateCardSchema(_Schema):
     responses = {
         "200": {
             "description": "A payment card number object",
             "content": {
                 "application/json": {
-                    "schema": NUMBER_RESPONSE_SCHEMA
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "number": {
+                                "type": "string",
+                                "pattern": r"\d{8,19}",
+                                "example": "4024007168211802"
+                            },
+                            "details": NUMBER_DETAIL_RESPONSE_SCHEMA,
+                        }
+                    }
                 }
             }
         },
         "400": {
-            "description": "`issuer` did not match any known Card Issuer"
+            "description": "`issuer`, `prefix`, or `length` is an invalid value"
         },
         "default": {
             "description": "Unexpected error"
         }
     }
 
-
-class GenerateCardFromPrefixSchema(_Schema):
-    responses = {
-        "200": {
-            "description": "A payment card number object",
-            "content": {
-                "application/json": {
-                    "schema": NUMBER_RESPONSE_SCHEMA
-                }
-            }
+    parameters = [{
+        "in": "query",
+        "name": "issuer",
+        "schema": {
+            "type": "string"
         },
-        "400": {
-            "description": "`prefix` is not a valid number string"
+        "description": "The CardIssuer for the generated card to have the BIN "
+        "and length of. May not be used with `length` or `prefix`."
+    }, {
+        "in": "query",
+        "name": "length",
+        "schema": {
+            "type": "integer"
         },
-        "default": {
-            "description": "Unexpected error"
-        }
-    }
+        "description": "Specify the number of digits for the generated card to "
+        "contain."
+    }, {
+        "in": "query",
+        "name": "prefix",
+        "schema": {
+            "type": "string"
+        },
+        "description": "The digits for the generated card to begin with."
+    }]
