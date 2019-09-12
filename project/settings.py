@@ -25,19 +25,31 @@ SECRET_KEY = '4^+w75ngyx8mm^ap$i5ludr84&_q3&*)42f*%gbce$gyo3nw=='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [".albert.com"]
 
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
 ]
+
+EXTERNAL_PACKAGE_APPS = [
+    'django_extensions',
+    'rest_framework',
+]
+
+INTERNAL_APPS = [
+    'validation'
+]
+
+INSTALLED_APPS = DJANGO_APPS + EXTERNAL_PACKAGE_APPS + INTERNAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
