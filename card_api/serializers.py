@@ -17,6 +17,7 @@ class PaymentCardNumberSerializer(serializers.Serializer):
             LengthWithoutSeparatorsValidator(min=MIN_LENGTH, max=MAX_LENGTH)
         ]
     )
+    private = serializers.BooleanField(default=True)
 
     def create(self, validated_data):
         return PaymentCardNumber(validated_data['number'])
@@ -32,4 +33,9 @@ class PaymentCardNumberSerializer(serializers.Serializer):
         }
         if instance.is_valid and instance.issuer:
             retval['issuer'] = instance.issuer
+        if not self.validated_data.get('private'):
+            retval = {
+                "number": instance.value,
+                "details": retval
+            }
         return retval

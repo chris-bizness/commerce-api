@@ -121,7 +121,7 @@ def generate_card_number_from_issuer(issuer):
     '''
     create_from = CardIssuer.from_string(issuer)
     if not create_from:
-        raise ValueError("Unable to find CardIssuer matching '{issuer}'.")
+        raise ValueError(f"Unable to find CardIssuer matching '{issuer}'.")
 
     prefix_range = random.choice(create_from.bin_ranges)
     if isinstance(prefix_range, str):
