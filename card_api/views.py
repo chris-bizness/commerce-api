@@ -57,6 +57,10 @@ class GenerateCardView(APIView):
         else:
             inputs = {}
             if num_digits is not None:
+                try:
+                    num_digits = int(num_digits)
+                except Exception:
+                    return self._bad(length="Must be an integer")
                 if num_digits < MIN_LENGTH or num_digits > MAX_LENGTH:
                     return self._bad(
                         length="Must be between [{MIN_LENGTH}, {MAX_LENGTH}],"
