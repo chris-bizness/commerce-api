@@ -86,19 +86,18 @@ def generate_card_number(prefix: str = None, *, num_digits: int = 16) -> str:
             &
         the number of digits to generate (optional - defaults to 16)
     '''
-    if not prefix:
-        prefix = ''
-    if not isinstance(prefix, str):
-        raise TypeError(f"prefix must be type str. Got {type(prefix)}")
     if num_digits < MIN_LENGTH or num_digits > MAX_LENGTH:
         raise ValueError(
             "Invalid length requested. Valid card numbers must be a length"
             f" between [{MIN_LENGTH}, {MAX_LENGTH}] inclusive."
         )
 
-    # Make sure we only have digits and that when we're checking how many digits
-    # to generate, we have the actual length without separators
-    prefix = clean_card_number(prefix, var_name='prefix')
+    if not prefix:
+        prefix = ''
+    else:
+        # Make sure we only have digits and that when we're checking how many
+        # digits to generate, we have the actual length without separators
+        prefix = clean_card_number(prefix, var_name='prefix')
     length = len(prefix)
     if length > num_digits:
         raise ValueError(
