@@ -4,6 +4,7 @@ from common.bin_tests import (
     is_discover_card,
     is_american_express,
 )
+from common.enums import CardIssuer
 from common.algorithms import luhn_check, clean_card_number
 from typing import NoReturn
 
@@ -12,13 +13,20 @@ from typing import NoReturn
 # The standard will be enforced by most major banks starting in 2022
 IIN_LENGTH = 6  # TODO: Update this value (most likely in 2022)
 
+# The ISO standard allows 1 - 12 digits for the personal identification number
+# Add that to the check digit (1) and the IIN (6)
+ALLOWED_LENGTH = {
+    'min': 8,
+    'max': 19
+}
+
 
 # Common banks' BIN tests
 COMMON_BIN_TESTS = {
-    'American Express': is_american_express,
-    'Discover Card': is_discover_card,
-    'MasterCard': is_master_card,
-    'Visa': is_visa,
+    CardIssuer.AMEX: is_american_express,
+    CardIssuer.DISCOVER: is_discover_card,
+    CardIssuer.MASTER_CARD: is_master_card,
+    CardIssuer.VISA: is_visa,
 }
 
 
@@ -28,10 +36,16 @@ class PaymentCardNumber:
     """
 
     def __init__(self, card_number: str):
-        card_number = clean_card_number(card_number)
-        self._number: str = card_number
-        self._validity_checked_for: str = None
-        self._is_valid: bool = None
+        self.value = card_number
+
+    @property
+    def value(self) -> str:
+        return self._number
+
+    @value.setter
+    def value(self, new_value: str) -> str:
+        self._number = clean_card_number(new_value)
+        return self._number
 
     @property
     def mii(self) -> str:
@@ -73,9 +87,10 @@ class PaymentCardNumber:
         Uses the Luhn algorithm and card number length to determine validity
         Does not guarantee the card number is in use
         '''
-        if self._is_valid is None or self._validity_checked_for != self._number:
-            self._set_validity()
-        return self._is_valid
+        return (
+            ALLOWED_LENGTH['min'] <= len(self._number) <= ALLOWED_LENGTH['max']
+            and luhn_check(self.value)
+        )
 
     @property
     def issuer(self) -> str:
@@ -84,11 +99,5 @@ class PaymentCardNumber:
         '''
         for issuer, test_func in COMMON_BIN_TESTS.items():
             if test_func(self._number):
-                return issuer
+                return issuer.value
         return None
-
-    def _set_validity(self) -> NoReturn:
-        self._validity_checked_for, self._is_valid = (
-            self._number,
-            luhn_check(self._number)
-        )
