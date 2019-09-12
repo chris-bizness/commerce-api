@@ -1,0 +1,8 @@
+[run]
+omit=
+    tests/*
+    .venv/*
+    manage.py
+
+[report]
+show_missing=true

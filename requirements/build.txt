@@ -1,3 +1,4 @@
 -r prod.txt
 
 pytest==5.1.2
+pytest-cov==2.7.1
