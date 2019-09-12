@@ -4,16 +4,25 @@ from common.constants import (
     MAX_PAYMENT_CARD_NUMBER_LENGTH as MAX_LENGTH,
 )
 from common.objects import PaymentCardNumber
+from validation.validators import (
+    validate_contains_only_digits_and_separators,
+    LengthWithoutSeparatorsValidator
+)
 
 
 class PaymentCardNumberSerializer(serializers.Serializer):
-    number = serializers.CharField(min_length=MIN_LENGTH, max_length=MAX_LENGTH)
+    number = serializers.CharField(
+        validators=[
+            validate_contains_only_digits_and_separators,
+            LengthWithoutSeparatorsValidator(min=MIN_LENGTH, max=MAX_LENGTH)
+        ]
+    )
 
     def create(self, validated_data):
         return PaymentCardNumber(validated_data['number'])
 
     def to_representation(self, instance):
-        return {
+        retval = {
             'isValid': instance.is_valid,
 
             'majorIndustryIdentifier': instance.mii,
@@ -21,3 +30,6 @@ class PaymentCardNumberSerializer(serializers.Serializer):
             'personalAccountNumber': instance.account_number,
             'checkDigit': instance.check_digit,
         }
+        if instance.is_valid and instance.issuer:
+            retval['issuer'] = instance.issuer
+        return retval
