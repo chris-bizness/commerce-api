@@ -4,13 +4,13 @@ from common.bin_tests import (
     is_discover_card,
     is_american_express,
 )
-from common.algorithms import luhn_check
+from common.algorithms import luhn_check, clean_card_number
 from typing import NoReturn
 
 # In 2017, the ISO updated its payment card number standard to
 #   lengthen the IIN from 6 digits to 8 (ISO/IEC 7812-1:2017)
 # The standard will be enforced by most major banks starting in 2022
-IIN_LENGTH = 6  # TODO: Update this value in 2022
+IIN_LENGTH = 6  # TODO: Update this value (most likely in 2022)
 
 
 # Common banks' BIN tests
@@ -28,6 +28,7 @@ class PaymentCardNumber:
     """
 
     def __init__(self, card_number: str):
+        card_number = clean_card_number(card_number)
         self._number: str = card_number
         self._validity_checked_for: str = None
         self._is_valid: bool = None
@@ -77,7 +78,7 @@ class PaymentCardNumber:
         return self._is_valid
 
     @property
-    def issuer(self):
+    def issuer(self) -> str:
         '''
         The issuer of the card number determined by the IIN
         '''

@@ -1,7 +1,15 @@
 import re
 
 
+# Users tend to input their card numbers with spacers where the card shows them
+# These tend to be the most common spacer characters
+COMMON_SEPARATORS = [' ', '.', ',', '|', ':', ';', '-', '\t']
+
+
 def is_all_digits(maybe_all_digits: str) -> bool:
+    '''
+    Returns True if the input string contains only digits (0-9), otherwise False
+    '''
     return bool(re.fullmatch(r'\d+', maybe_all_digits))
 
 
@@ -16,8 +24,7 @@ def clean_card_number(card_number: str) -> str:
             f"Expected card_number to be type 'str'. Got: {type(card_number)}"
         )
 
-    ignore_characters = [' ', '.', ',', '|', ':', ';', '-']
-    for ignore in ignore_characters:
+    for ignore in COMMON_SEPARATORS:
         card_number = card_number.replace(ignore, '')
     if not is_all_digits(card_number):
         raise ValueError(
