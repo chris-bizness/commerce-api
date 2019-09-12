@@ -3,7 +3,7 @@ from rest_framework.test import APIClient
 
 def _test(number):
     client = APIClient()
-    return client.post('/validate/', {'number': number}, format='json')
+    return client.post('/card-number/validate/', {'number': number}, format='json')
 
 
 def test_returns_0s_for_8_0s():
