@@ -6,19 +6,11 @@ from common.bin_tests import (
 )
 from common.enums import CardIssuer
 from common.algorithms import luhn_check, clean_card_number
-from typing import NoReturn
-
-# In 2017, the ISO updated its payment card number standard to
-#   lengthen the IIN from 6 digits to 8 (ISO/IEC 7812-1:2017)
-# The standard will be enforced by most major banks starting in 2022
-IIN_LENGTH = 6  # TODO: Update this value (most likely in 2022)
-
-# The ISO standard allows 1 - 12 digits for the personal identification number
-# Add that to the check digit (1) and the IIN (6)
-ALLOWED_LENGTH = {
-    'min': 8,
-    'max': 19
-}
+from common.constants import (
+    IIN_LENGTH,
+    MIN_PAYMENT_CARD_NUMBER_LENGTH as MIN_LENGTH,
+    MAX_PAYMENT_CARD_NUMBER_LENGTH as MAX_LENGTH
+)
 
 
 # Common banks' BIN tests
@@ -88,7 +80,7 @@ class PaymentCardNumber:
         Does not guarantee the card number is in use
         '''
         return (
-            ALLOWED_LENGTH['min'] <= len(self._number) <= ALLOWED_LENGTH['max']
+            MIN_LENGTH <= len(self._number) <= MAX_LENGTH
             and luhn_check(self.value)
         )
 
