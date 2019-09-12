@@ -3,6 +3,7 @@ omit=
     tests/*
     .venv/*
     manage.py
+    project/wsgi.py
 
 [report]
 show_missing=true
