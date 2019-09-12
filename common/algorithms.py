@@ -115,6 +115,10 @@ def generate_card_number(prefix=None, *, num_digits=16):
 
 
 def generate_card_number_from_issuer(issuer):
+    '''
+    Pass in a string or CardIssuer enum to generate a random card number
+    with a BIN matching one of that issuer's BIN ranges
+    '''
     create_from = CardIssuer.from_string(issuer)
     if not create_from:
         raise ValueError("Unable to find CardIssuer matching '{issuer}'.")
