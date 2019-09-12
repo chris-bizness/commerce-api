@@ -27,20 +27,20 @@ class PaymentCardNumber:
     A class encapsulating common functionality used for payment card numbers
     """
 
-    def __init__(self, card_number: str):
+    def __init__(self, card_number):
         self.value = card_number
 
     @property
-    def value(self) -> str:
+    def value(self):
         return self._number
 
     @value.setter
-    def value(self, new_value: str) -> str:
+    def value(self, new_value):
         self._number = clean_card_number(new_value)
         return self._number
 
     @property
-    def mii(self) -> str:
+    def mii(self):
         '''
         The Major Industry Identifier
         The first digit of the card number
@@ -49,7 +49,7 @@ class PaymentCardNumber:
 
     # TODO: Update the `iin` docstring when IIN_LENGTH changes
     @property
-    def iin(self) -> str:
+    def iin(self):
         '''
         The Issuer Identification Number (AKA the Bank Identification Number)
         The first 6 digits (soon to be 8) in a payment card number
@@ -57,7 +57,7 @@ class PaymentCardNumber:
         return self._number[:IIN_LENGTH]
 
     @property
-    def account_number(self) -> str:
+    def account_number(self):
         '''
         The personal identification number stored as part of the payment card
         number.
@@ -66,7 +66,7 @@ class PaymentCardNumber:
         return self._number[IIN_LENGTH:-1]
 
     @property
-    def check_digit(self) -> str:
+    def check_digit(self):
         '''
         The final digit of the payment card number
         Used by the Luhn algorithm to minimize errors from typos & accidents
@@ -74,7 +74,7 @@ class PaymentCardNumber:
         return self._number[-1:]    # Use slice notation to guarantee safety
 
     @property
-    def is_valid(self) -> bool:
+    def is_valid(self):
         '''
         Uses the Luhn algorithm and card number length to determine validity
         Does not guarantee the card number is in use
@@ -85,7 +85,7 @@ class PaymentCardNumber:
         )
 
     @property
-    def issuer(self) -> str:
+    def issuer(self):
         '''
         The issuer of the card number determined by the IIN
         '''

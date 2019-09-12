@@ -116,7 +116,7 @@ def test_issuer_returns_issuer_matching_passing_test(bin_test_mocks):
         CardIssuer.MASTER_CARD: mc_mock,
     }.items()
 
-    def _test(obj) -> str:
+    def _test(obj):
         issuer = obj.issuer
         if not issuer:
             return issuer

@@ -4,7 +4,7 @@ from rest_framework import serializers
 from common.constants import COMMON_SEPARATORS
 
 
-def validate_contains_only_digits_and_separators(value: str):
+def validate_contains_only_digits_and_separators(value):
     allowed_characters = re.escape(string.digits + ''.join(COMMON_SEPARATORS))
     only_allowed = re.match(f"[{allowed_characters}]+$", value)
     if not only_allowed:
@@ -15,13 +15,13 @@ def validate_contains_only_digits_and_separators(value: str):
 
 
 class LengthWithoutSeparatorsValidator:
-    def __init__(self, *, min: int = None, max: int = None):
+    def __init__(self, *, min=None, max=None):
         if min is None and max is None:
             raise ValueError("At least one of (min, max) requires a value")
         self._min = min
         self._max = max
 
-    def __call__(self, value: str):
+    def __call__(self, value):
         if not isinstance(value, str):
             return  # SRP
         for separator in COMMON_SEPARATORS:

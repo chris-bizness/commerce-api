@@ -6,20 +6,17 @@ from common.constants import (
     MIN_PAYMENT_CARD_NUMBER_LENGTH as MIN_LENGTH,
     MAX_PAYMENT_CARD_NUMBER_LENGTH as MAX_LENGTH,
 )
+from common.enums import CardIssuer
 
 
-def is_all_digits(maybe_all_digits: str) -> bool:
+def is_all_digits(maybe_all_digits):
     '''
     Returns True if the input string contains only digits (0-9), otherwise False
     '''
     return bool(re.fullmatch(r'\d+', maybe_all_digits))
 
 
-def clean_card_number(
-    card_number: str,
-    *,
-    var_name: str = 'card_number'
-) -> str:
+def clean_card_number(card_number, *, var_name='card_number'):
     '''
     Many users tend to add spaces, dashes, or periods in between chunks of
     numbers on their credit cards. Clean the number by removing all the "spacer"
@@ -39,7 +36,7 @@ def clean_card_number(
     return card_number
 
 
-def luhn_check(card_number: str) -> bool:
+def luhn_check(card_number):
     '''
     Takes the card number to check against the Luhn algorithm and returns
     True/False for whether it passed
@@ -50,11 +47,7 @@ def luhn_check(card_number: str) -> bool:
     return valid_check_digit == cur_check_digit
 
 
-def _get_luhn_check_digit(
-    card_number: str,
-    *,
-    is_incomplete: bool = False
-) -> int:
+def _get_luhn_check_digit(card_number, *, is_incomplete=False):
     '''
     Takes as input a card_number (string) and a flag `is_incomplete` which
     denotes whether the card number contains the (either valid or invalid)
@@ -79,7 +72,7 @@ def _get_luhn_check_digit(
     return (10 - (check_sum % 10)) % 10
 
 
-def generate_card_number(prefix: str = None, *, num_digits: int = 16) -> str:
+def generate_card_number(prefix=None, *, num_digits=16):
     '''
     Generate a random card number that passes the Luhn algorithm, given:
         a prefix (optional)
