@@ -32,8 +32,9 @@ def luhn_check(card_number: str) -> bool:
     True/False for whether it passed
     '''
     card_number = clean_card_number(card_number)
-    valid_check_digit = _get_luhn_check_digit(card_number)
-    return valid_check_digit == card_number[-1:]
+    valid_check_digit = str(_get_luhn_check_digit(card_number))
+    cur_check_digit = card_number[-1:]
+    return valid_check_digit == cur_check_digit
 
 
 def _get_luhn_check_digit(
@@ -56,9 +57,10 @@ def _get_luhn_check_digit(
     check_sum = 0
     to_double, remaining = card_number[::-2], card_number[:-1][::-2]
     for digit in to_double:
-        doubled = digit * 2
-        clamped = (doubled - 1) % 9 + 1
-        check_sum += clamped
+        doubled = int(digit) * 2
+        if doubled > 9:
+            doubled -= 9
+        check_sum += doubled
     check_sum += sum(int(x) for x in remaining)
 
-    return 10 - (check_sum % 10)
+    return (10 - (check_sum % 10)) % 10
