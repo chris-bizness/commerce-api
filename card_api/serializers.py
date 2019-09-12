@@ -4,7 +4,7 @@ from common.constants import (
     MAX_PAYMENT_CARD_NUMBER_LENGTH as MAX_LENGTH,
 )
 from common.objects import PaymentCardNumber
-from validation.validators import (
+from card_api.validators import (
     validate_contains_only_digits_and_separators,
     LengthWithoutSeparatorsValidator
 )

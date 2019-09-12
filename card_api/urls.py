@@ -1,5 +1,5 @@
 from django.urls import path
-from validation.views import ValidateCardView
+from card_api.views import ValidateCardView
 from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [

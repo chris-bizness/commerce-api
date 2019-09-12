@@ -1,5 +1,5 @@
 from django.urls import path, include
 
 urlpatterns = [
-    path('', include('validation.urls')),
+    path('', include('card_api.urls')),
 ]
