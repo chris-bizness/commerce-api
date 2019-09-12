@@ -4,6 +4,7 @@ from common.constants import (
     MAX_PAYMENT_CARD_NUMBER_LENGTH as MAX_LENGTH,
 )
 from common.objects import PaymentCardNumber
+from typing import Dict, Any
 from card_api.validators import (
     validate_contains_only_digits_and_separators,
     LengthWithoutSeparatorsValidator
@@ -18,10 +19,10 @@ class PaymentCardNumberSerializer(serializers.Serializer):
         ]
     )
 
-    def create(self, validated_data):
+    def create(self, validated_data: Dict[str, Any]) -> PaymentCardNumber:
         return PaymentCardNumber(validated_data['number'])
 
-    def to_representation(self, instance):
+    def to_representation(self, instance: PaymentCardNumber) -> Dict[str, Any]:
         retval = {
             'isValid': instance.is_valid,
 
